@@ -1,4 +1,4 @@
-use crate::engine::checks::Check;
+use crate::engine::checks::check::Check;
 
 pub struct Service {
     name: String,
