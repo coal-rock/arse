@@ -1,3 +1,4 @@
+use serde::Serialize;
 use std::{collections::HashMap, net::IpAddr};
 
 pub type CheckError = ();
@@ -25,7 +26,7 @@ pub struct CheckResult {
     pub message: Option<CheckMessage>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub enum CheckFieldValue {
     String(String),
     Username(String),
@@ -96,16 +97,23 @@ impl ExtractCheckFieldValue for IpAddr {
     }
 }
 
+#[derive(Serialize, Clone)]
 pub struct CheckMeta {
     pub name: String,
     pub description: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct CheckFieldSchema {
     pub name: String,
     pub description: Option<String>,
     pub default: CheckFieldValue,
+}
+
+#[derive(Serialize, Clone)]
+pub struct CheckSchema {
+    pub meta: CheckMeta,
+    pub fields: Vec<CheckFieldSchema>,
 }
 
 pub trait Check {
@@ -116,6 +124,16 @@ pub trait Check {
     fn get_fields_schema() -> Vec<CheckFieldSchema>
     where
         Self: Sized;
+
+    fn get_check_schema() -> CheckSchema
+    where
+        Self: Sized,
+    {
+        return CheckSchema {
+            meta: Self::get_check_meta(),
+            fields: Self::get_fields_schema(),
+        };
+    }
 
     fn check(self) -> Result<CheckResult, CheckError>;
 

@@ -9,13 +9,13 @@ check!(
     Fields: [
         likelihood:
             Name: "Likelihood",
-            Description: "Check which will randomly resolve to Up or Down depending according to a provided probability.",
+            Description: "Likelihood out of 100% that the check will resolve to Up.",
             Default: CheckFieldValue::Percentage(50.0f32),
             Type: f32,
     ]
 
     fn check(self) -> Result<CheckResult, CheckError> {
-        let likelihood: f32 = self.likelihood / 100.0;
+        let likelihood: f32 = (self.likelihood / 100.0).clamp(0.0, 1.0);
 
         Ok(CheckResult {
             status: match random_bool(likelihood as f64) {

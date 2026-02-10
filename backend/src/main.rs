@@ -1,7 +1,8 @@
+pub mod api;
 pub mod config;
 pub mod engine;
-use engine::service;
 
-fn main() {
-    println!("Hello, world!");
+#[tokio::main]
+async fn main() {
+    api::launch().await;
 }
