@@ -2,6 +2,8 @@ pub mod checks;
 pub mod service;
 pub mod team;
 
+use sqlx::{Connection, SqliteConnection, sqlite::SqliteConnectOptions};
+
 use crate::{
     config::Config,
     engine::{
@@ -10,17 +12,26 @@ use crate::{
         team::Team,
     },
 };
+
 use std::{thread, time};
 
 pub struct Engine {
     running: bool,
     config: Config,
+    db: SqliteConnection,
 }
 
 impl Engine {
-    pub fn new(config: Config) -> Self {
+    pub async fn new(config: Config) -> Self {
+        let db_options = SqliteConnectOptions::new()
+            .filename(&config.database_path)
+            .create_if_missing(true);
+
         Self {
             running: false,
+            db: sqlx::SqliteConnection::connect_with(&db_options)
+                .await
+                .unwrap(),
             config: config,
         }
     }

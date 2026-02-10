@@ -18,7 +18,7 @@ async fn main() {
         max_concurrect_checks: 10,
         admin_username: "admin".into(),
         admin_password: "bb123#123".into(),
-        database_path: PathBuf::from("./arse.db"),
+        database_path: PathBuf::from("arse.db"),
         teams: vec![Team {
             name: "Team 1".into(),
             services: vec![Service {
@@ -30,7 +30,7 @@ async fn main() {
     };
 
     let (interface, port) = (config.interface, config.port);
-    let engine = Engine::new(config);
+    let engine = Engine::new(config).await;
 
     let _ = tokio::join!(tokio::spawn(api::launch(interface, port, engine)));
 }
