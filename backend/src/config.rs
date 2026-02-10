@@ -1,5 +1,5 @@
 use crate::engine::team::Team;
-use std::net::IpAddr;
+use std::{net::IpAddr, path::PathBuf};
 
 pub struct Config {
     pub target_round_time: f32,
@@ -8,5 +8,6 @@ pub struct Config {
     pub max_concurrect_checks: u32,
     pub admin_username: String,
     pub admin_password: String,
+    pub database_path: PathBuf,
     pub teams: Vec<Team>,
 }

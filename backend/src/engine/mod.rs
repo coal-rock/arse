@@ -45,7 +45,8 @@ impl Engine {
         }
     }
 
-    // TODO: Add an upper limit to concurrency, deal with .unwrap()
+    // TODO: Add an upper limit to concurrency, deal with .unwrap(),
+    // implement global thread timeout(?)
     fn run_round(&mut self) -> Vec<(&Team, &Service, Result<CheckResult, CheckError>)> {
         thread::scope(|s| {
             let mut check_handles = vec![];

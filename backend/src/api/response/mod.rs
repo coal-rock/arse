@@ -7,17 +7,22 @@ use axum::{
 };
 use serde::Serialize;
 
+use crate::api::error::ApiError;
+
 #[derive(Serialize)]
 pub struct ApiResponse<T> {
     pub success: bool,
     pub data: T,
 }
 
-impl<T> ApiResponse<T> {
-    pub fn ok(data: T) -> Self {
+impl<T> From<T> for ApiResponse<T>
+where
+    T: Serialize,
+{
+    fn from(value: T) -> Self {
         Self {
             success: true,
-            data,
+            data: value,
         }
     }
 }
@@ -30,3 +35,5 @@ where
         (StatusCode::OK, Json(self)).into_response()
     }
 }
+
+pub type ApiResult<T> = Result<ApiResponse<T>, ApiError>;
