@@ -10,17 +10,20 @@ pub enum CheckFieldValidationError {
     MissingField(String),
 }
 
+#[derive(Clone)]
 pub enum CheckMessage {
     Text(String),
     Json(String),
 }
 
+#[derive(Clone)]
 pub enum CheckStatus {
     Up,
     Degreaded,
     Down,
 }
 
+#[derive(Clone)]
 pub struct CheckResult {
     pub status: CheckStatus,
     pub message: Option<CheckMessage>,
@@ -135,7 +138,7 @@ pub trait Check {
         };
     }
 
-    fn check(self) -> Result<CheckResult, CheckError>;
+    fn check(&self) -> Result<CheckResult, CheckError>;
 
     fn configure(
         check_fields: HashMap<String, CheckFieldValue>,
@@ -217,6 +220,18 @@ macro_rules! check {
             }
 
             $check
+        }
+
+        impl $check_ident {
+            #[allow(dead_code)]
+            pub fn new(
+                $($field_ident: $field_type,)*
+            ) -> Self {
+
+                Self {
+                    $($field_ident: $field_ident,)*
+                }
+            }
         }
     };
 }

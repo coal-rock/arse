@@ -1,5 +1,5 @@
 pub mod check;
-mod random;
+pub mod random;
 
 use crate::engine::checks::{
     check::{Check, CheckSchema},

@@ -1,6 +1,6 @@
 use crate::engine::service::Service;
 
 pub struct Team {
-    name: String,
-    services: Vec<Service>,
+    pub name: String,
+    pub services: Vec<Service>,
 }
