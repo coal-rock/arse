@@ -1,13 +1,15 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, net::IpAddr};
 
 pub type CheckError = ();
 
+#[derive(Debug)]
 pub enum CheckFieldValidationError {
     IncorrectNumberOfFields,
     UnexpectedField(String),
     InvalidFieldValue,
     MissingField(String),
+    InvalidCheckName,
 }
 
 #[derive(Clone)]
@@ -29,7 +31,7 @@ pub struct CheckResult {
     pub message: Option<CheckMessage>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum CheckFieldValue {
     String(String),
     Username(String),

@@ -5,7 +5,8 @@ pub mod team;
 use sqlx::{Connection, SqliteConnection, sqlite::SqliteConnectOptions};
 
 use crate::{
-    config::Config,
+    config::{self, Config},
+    db,
     engine::{
         checks::check::{CheckError, CheckResult},
         service::Service,
@@ -23,15 +24,9 @@ pub struct Engine {
 
 impl Engine {
     pub async fn new(config: Config) -> Self {
-        let db_options = SqliteConnectOptions::new()
-            .filename(&config.database_path)
-            .create_if_missing(true);
-
         Self {
             running: false,
-            db: sqlx::SqliteConnection::connect_with(&db_options)
-                .await
-                .unwrap(),
+            db: db::get_handle(&config.database_path).await,
             config: config,
         }
     }

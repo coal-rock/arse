@@ -16,7 +16,7 @@ check!(
 
     fn check(&self) -> Result<CheckResult, CheckError> {
         let likelihood: f32 = (self.likelihood / 100.0).clamp(0.0, 1.0);
-        println!("hello");
+
         Ok(CheckResult {
             status: match random_bool(likelihood as f64) {
                 true => CheckStatus::Up,
