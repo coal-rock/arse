@@ -2,7 +2,7 @@ pub mod checks;
 pub mod service;
 pub mod team;
 
-use sqlx::{Connection, SqliteConnection, sqlite::SqliteConnectOptions};
+use sqlx::{Connection, Pool, Sqlite, SqliteConnection, sqlite::SqliteConnectOptions};
 
 use crate::{
     config::{self, Config},
@@ -19,14 +19,14 @@ use std::{thread, time};
 pub struct Engine {
     running: bool,
     config: Config,
-    db: SqliteConnection,
+    pub db_pool: Pool<Sqlite>,
 }
 
 impl Engine {
     pub async fn new(config: Config) -> Self {
         Self {
             running: false,
-            db: db::get_handle(&config.database_path).await,
+            db_pool: db::get_pool(&config.database_path).await,
             config: config,
         }
     }
@@ -37,6 +37,10 @@ impl Engine {
 
     pub fn stop(&mut self) {
         self.running = false;
+    }
+
+    pub fn is_running(&self) -> bool {
+        self.running
     }
 
     pub fn spawn(&mut self) {

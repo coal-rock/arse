@@ -9,12 +9,17 @@ pub struct CheckSchemaResponse {
     pub fields: Vec<CheckFieldSchema>,
 }
 
-impl From<CheckSchema> for CheckSchemaResponse {
-    fn from(value: CheckSchema) -> Self {
+impl From<&CheckSchema> for CheckSchemaResponse {
+    fn from(value: &CheckSchema) -> Self {
         CheckSchemaResponse {
-            name: value.meta.name,
-            description: value.meta.description,
-            fields: value.fields,
+            name: value.meta.name.clone(),
+            description: value.meta.description.clone(),
+            fields: value.fields.clone(),
         }
     }
+}
+
+#[derive(Serialize, Clone)]
+pub struct EngineStatusResponse {
+    pub running: bool,
 }

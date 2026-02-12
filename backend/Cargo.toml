@@ -5,10 +5,12 @@ edition = "2024"
 
 [dependencies]
 rand = "0.10.0"
-axum = "0.8"
+axum = { version = "0.8", features = ["macros"] }
 sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"] }
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
 ts-rs = "12"
-serde_json = "1.0.149"
+serde_json = "1.0"
+# https://stackoverflow.com/questions/79473286/upgrading-argon2-from-0-5-to-0-5-3-gives-error-no-osrng-in-the-root
+argon2 = { version = "0.5", features = ["std"] }
 

@@ -1,29 +1,22 @@
 use std::path::PathBuf;
 
-use sqlx::{Connection, SqliteConnection, sqlite::SqliteConnectOptions};
+use axum::routing::connect;
+use sqlx::{
+    Pool, Sqlite, SqlitePool,
+    sqlite::{SqliteConnectOptions, SqlitePoolOptions},
+};
 
 pub mod engine;
+pub mod users;
 
-pub async fn get_handle(db_path: &PathBuf) -> SqliteConnection {
+pub async fn get_pool(db_path: &PathBuf) -> SqlitePool {
     let db_options = SqliteConnectOptions::new()
         .filename(db_path)
         .create_if_missing(true);
 
-    let mut db = SqliteConnection::connect_with(&db_options).await.unwrap();
-
-    // let _ = sqlx::query!(
-    //     "CREATE TABLE IF NOT EXISTS rounds (
-    //             round INTEGER,
-    //             team TEXT,
-    //             service TEXT,
-    //             success INTEGER,
-    //             message TEXT,
-    //             timestamp REAL
-    //         )
-    //     "
-    // )
-    // .execute(&mut db)
-    // .await;
-
-    db
+    SqlitePoolOptions::new()
+        .max_connections(10)
+        .connect_with(db_options)
+        .await
+        .unwrap()
 }

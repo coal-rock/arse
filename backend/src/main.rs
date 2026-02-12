@@ -19,7 +19,7 @@ async fn main() {
         max_concurrect_checks: 10,
         admin_username: "admin".into(),
         admin_password: "bb123#123".into(),
-        database_path: PathBuf::from("arse.db"),
+        database_path: PathBuf::from("arse_test.db"),
         teams: vec![Team {
             name: "Team 1".into(),
             services: vec![Service {

@@ -1,7 +1,5 @@
-use std::{
-    net::IpAddr,
-    sync::{Arc, Mutex},
-};
+use std::{net::IpAddr, sync::Arc};
+use tokio::sync::Mutex;
 
 use crate::engine::Engine;
 
