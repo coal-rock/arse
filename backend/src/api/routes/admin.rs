@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use axum::Json;
 use axum::routing::{get, post};
 use axum::{Router, extract::State};
@@ -7,6 +9,7 @@ use crate::api::response::ApiResult;
 use crate::api::response::admin::{CheckSchemaResponse, EngineStatusResponse};
 use crate::api::routes::ApiState;
 use crate::db;
+use crate::engine::checks::check::CheckFieldValue;
 use crate::engine::checks::get_available_checks;
 
 pub fn routes<S>(state: ApiState) -> Router<S> {
@@ -16,6 +19,8 @@ pub fn routes<S>(state: ApiState) -> Router<S> {
         .route("/stopEngine", post(stop_engine))
         .route("/getEngineStatus", get(get_engine_status))
         .route("/createAdminAccount", post(create_initial_admin_account))
+        .route("/createService", post(create_service))
+        .route("/removeService", post(delete_service))
         .with_state(state)
 }
 
@@ -50,6 +55,55 @@ async fn get_engine_status(State(state): State<ApiState>) -> ApiResult<EngineSta
 }
 
 #[derive(Deserialize)]
+struct CreateServiceRequest {
+    service_name: String,
+    check_name: String,
+    check_configuration: HashMap<String, CheckFieldValue>,
+    weight: i64,
+}
+
+async fn create_service(
+    State(state): State<ApiState>,
+    Json(payload): Json<CreateServiceRequest>,
+) -> ApiResult<()> {
+    let pool = &state.engine.lock().await.db_pool;
+
+    if !db::engine::does_service_exist(pool.clone(), &payload.service_name).await {
+        return ApiResult::Err("service already exists".into());
+    }
+
+    let _ = db::engine::create_service(
+        pool.clone(),
+        &payload.service_name,
+        payload.weight,
+        &payload.check_name,
+        payload.check_configuration,
+    );
+
+    ApiResult::Ok(().into())
+}
+
+#[derive(Deserialize)]
+struct DeleteServiceRequest {
+    service_name: String,
+}
+
+async fn delete_service(
+    State(state): State<ApiState>,
+    Json(payload): Json<DeleteServiceRequest>,
+) -> ApiResult<()> {
+    let pool = &state.engine.lock().await.db_pool;
+
+    if !db::engine::does_service_exist(pool.clone(), &payload.service_name).await {
+        return ApiResult::Err("could not find service with specified name".into());
+    }
+
+    db::engine::delete_service(pool.clone(), &payload.service_name).await;
+
+    ApiResult::Ok(().into())
+}
+
+#[derive(Deserialize)]
 struct CreateAdminAccountRequest {
     username: String,
     password: String,
@@ -66,5 +120,5 @@ async fn create_initial_admin_account(
     }
 
     db::users::add_user(pool.clone(), payload.username, payload.password).await;
-    return ApiResult::Ok(().into());
+    ApiResult::Ok(().into())
 }

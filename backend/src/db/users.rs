@@ -2,7 +2,7 @@ use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
-use sqlx::{SqliteConnection, SqlitePool};
+use sqlx::SqlitePool;
 
 pub async fn does_admin_user_exist(db: SqlitePool) -> bool {
     sqlx::query!(r#"SELECT COUNT(*) as "number_of_users" FROM users"#)
@@ -39,7 +39,7 @@ pub enum CredentialsStatus {
 }
 
 pub async fn validate_credentials(
-    db: &mut SqliteConnection,
+    db: SqlitePool,
     username: String,
     password: String,
 ) -> CredentialsStatus {
@@ -47,7 +47,7 @@ pub async fn validate_credentials(
         r#"SELECT password_hash FROM users WHERE username == $1"#,
         username
     )
-    .fetch_optional(db)
+    .fetch_optional(&db)
     .await
     .unwrap();
 
