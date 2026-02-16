@@ -1,3 +1,6 @@
-export default function Scoreboard() {
-
+export function Scoreboard() {
+    return (
+        <>
+        </>
+    )
 };
