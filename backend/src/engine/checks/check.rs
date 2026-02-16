@@ -31,7 +31,8 @@ pub struct CheckResult {
     pub message: Option<CheckMessage>,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, ts_rs::TS)]
+#[ts(export)]
 pub enum CheckFieldValue {
     String(String),
     Username(String),
@@ -108,7 +109,8 @@ pub struct CheckMeta {
     pub description: String,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct CheckFieldSchema {
     pub name: String,
     pub description: Option<String>,
