@@ -7,7 +7,8 @@ use axum::{
 };
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct ApiError {
     pub success: bool,
     pub message: Option<String>,

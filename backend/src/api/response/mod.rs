@@ -9,7 +9,8 @@ use serde::Serialize;
 
 use crate::api::error::ApiError;
 
-#[derive(Serialize)]
+#[derive(Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct ApiResponse<T> {
     pub success: bool,
     pub data: T,

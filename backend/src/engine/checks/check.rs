@@ -43,7 +43,7 @@ pub enum CheckFieldValue {
     Duration(f32),
     Timeout(f32),
     Port(u16),
-    IPAddrk(IpAddr),
+    IPAddr(IpAddr),
 }
 
 // TODO: Consider cleaning this up.
@@ -97,7 +97,7 @@ impl ExtractCheckFieldValue for u16 {
 impl ExtractCheckFieldValue for IpAddr {
     fn extract(value: CheckFieldValue) -> Result<Self, CheckFieldValidationError> {
         return match value {
-            CheckFieldValue::IPAddrk(value) => Ok(value.into()),
+            CheckFieldValue::IPAddr(value) => Ok(value.into()),
             _ => Result::Err(CheckFieldValidationError::InvalidFieldValue),
         };
     }
