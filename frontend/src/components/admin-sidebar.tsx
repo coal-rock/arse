@@ -7,7 +7,6 @@ import {
     SidebarGroupLabel,
     SidebarHeader,
     SidebarMenuButton,
-    SidebarMenuItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar"
 import MoreHorizontalIcon from "./icons/more-horizontal"
@@ -18,11 +17,6 @@ import { Button } from "./ui/button"
 export function AdminSidebar() {
     return (
         <Sidebar variant="sidebar" collapsible="none" className="border-r border-r-sidebar-border bg-background">
-            <SidebarHeader className="flex flex-col items-center">
-                <small className="text-foreground/75 whitespace-pre">ARSE Admin Panel</small>
-                <SidebarSeparator />
-            </SidebarHeader>
-
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>

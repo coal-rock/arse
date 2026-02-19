@@ -3,9 +3,9 @@ import { Header } from "./header";
 
 export function Layout() {
     return (
-        <div className="flex grow flex-col">
+        <div className="flex flex-col w-full h-full">
             <Header />
-            <main className="flex grow">
+            <main className="flex flex-1 min-h-0 w-full">
                 <Outlet />
             </main>
         </div>
