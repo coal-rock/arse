@@ -6,7 +6,9 @@ use axum::{Router, extract::State};
 use serde::Deserialize;
 
 use crate::api::response::ApiResult;
-use crate::api::response::admin::{CheckSchemaResponse, EngineStatusResponse};
+use crate::api::response::admin::{
+    CheckSchemaResponse, EngineStatusResponse, ListUsersResponse, UsersResponse,
+};
 use crate::api::routes::ApiState;
 use crate::db;
 use crate::engine::checks::check::CheckFieldValue;
@@ -15,6 +17,7 @@ use crate::engine::checks::get_available_checks;
 pub fn routes<S>(state: ApiState) -> Router<S> {
     Router::new()
         .route("/listAvailableChecks", get(list_available_checks))
+        .route("/listUsers", get(list_users))
         .route("/startEngine", post(start_engine))
         .route("/stopEngine", post(stop_engine))
         .route("/getEngineStatus", get(get_engine_status))
@@ -52,6 +55,13 @@ async fn get_engine_status(State(state): State<ApiState>) -> ApiResult<EngineSta
         }
         .into(),
     )
+}
+
+async fn list_users(State(state): State<ApiState>) -> ApiResult<ListUsersResponse> {
+    let pool = &state.engine.lock().await.db_pool;
+    let users: ListUsersResponse = db::users::list_users(pool.clone()).await.into();
+
+    ApiResult::Ok(users.into())
 }
 
 #[derive(Deserialize)]

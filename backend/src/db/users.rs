@@ -13,6 +13,19 @@ pub async fn does_admin_user_exist(db: SqlitePool) -> bool {
         > 0
 }
 
+pub struct UserDB {
+    pub username: String,
+    pub enabled: bool,
+    pub created: sqlx::types::chrono::NaiveDateTime,
+}
+
+pub async fn list_users(db: SqlitePool) -> Vec<UserDB> {
+    sqlx::query_as!(UserDB, "SELECT username, enabled, created FROM users")
+        .fetch_all(&db)
+        .await
+        .unwrap()
+}
+
 pub async fn add_user(db: SqlitePool, username: String, password: String) {
     let salt = SaltString::generate(&mut OsRng);
     let argon2 = Argon2::default();
